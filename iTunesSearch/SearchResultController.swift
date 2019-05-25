@@ -61,12 +61,8 @@ class SearchResultController {
                     completion(error)
                 }
             }
-        }
+        }.resume() //data task wont run if you dont use this resume(). it pauses it you dont resume()
     }
-    
-    
-    
-    
     
     
 }
