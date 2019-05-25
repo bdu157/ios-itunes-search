@@ -10,7 +10,7 @@ import Foundation
 
 class SearchResultController {
     
-    let basicURL = URL(string: "https://itunes.apple.com/search")!
+    let basicURL = URL(string: "https://itunes.apple.com/")!
     
     var searchResults: [SearchResult] = []
     
@@ -28,14 +28,21 @@ class SearchResultController {
     
     func performSearch(searchTerm: String, resultType: ResultType, completion: @escaping (Error?) -> Void ) {
         
+        let searchUrl = basicURL.appendingPathComponent("search")
+        
         //https://itunes.apple.com/search?term=jack+johnson&entity=software, musicTrack, movie
-        var urlComponents = URLComponents(url: basicURL, resolvingAgainstBaseURL: true)
+        var urlComponents = URLComponents(url: searchUrl, resolvingAgainstBaseURL: true)
         
-        let searchTermQueryItem = URLQueryItem(name: "term", value: searchTerm+"&entity=\(resultType)")
+        //let searchTermQueryItem = URLQueryItem(name: "term", value: searchTerm+"&entity=\(resultType)") - https://itunes.apple.com/search?term=twitter%26entity%3Dsoftware
+    
+        let searchTermQueryItem = URLQueryItem(name: "term", value: searchTerm)
+        let resultQueryItem = URLQueryItem(name: "entity", value: resultType.rawValue)
         
-        urlComponents?.queryItems = [searchTermQueryItem]
+        urlComponents?.queryItems = [searchTermQueryItem, resultQueryItem]
+        print(searchTermQueryItem)
         
         guard let requestURL = urlComponents?.url else {NSLog("requestURL is nil"); completion(NSError()); return}
+        print(requestURL)
         
         URLSession.shared.dataTask(with: requestURL) { (data, _, error) in
             if let error = error {
@@ -66,3 +73,4 @@ class SearchResultController {
     
     
 }
+
