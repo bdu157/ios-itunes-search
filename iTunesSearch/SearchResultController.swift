@@ -26,19 +26,20 @@ class SearchResultController {
     //  c. decod dtat(set stragtegy if neccesary)
     //  d. set self.people = decodedData
     
-    func performSearch(searchTerm: String, resultType: ResultType, completion: @escaping (Error?) -> Void ) {
+    func performSearch(searchTerm: String, resultType: ResultType, limit: Int, completion: @escaping (Error?) -> Void ) {
         
         let searchUrl = basicURL.appendingPathComponent("search")
         
         //https://itunes.apple.com/search?term=jack+johnson&entity=software, musicTrack, movie
         var urlComponents = URLComponents(url: searchUrl, resolvingAgainstBaseURL: true)
         
-        //let searchTermQueryItem = URLQueryItem(name: "term", value: searchTerm+"&entity=\(resultType)") - https://itunes.apple.com/search?term=twitter%26entity%3Dsoftware
+        //let searchTermQueryItem = URLQueryItem(name: "term", value: searchTerm+"&entity=\(resultType)")// - https://itunes.apple.com/search?term=twitter%26entity%3Dsoftware
     
         let searchTermQueryItem = URLQueryItem(name: "term", value: searchTerm)
-        let resultQueryItem = URLQueryItem(name: "entity", value: resultType.rawValue)
+        let resultQueryItem = URLQueryItem(name: "entity", value: resultType.rawValue)  //this will create &
+        let resultLimitQueryItem = URLQueryItem(name: "limit", value: String(limit))  //this will automatically create &
         
-        urlComponents?.queryItems = [searchTermQueryItem, resultQueryItem]
+        urlComponents?.queryItems = [searchTermQueryItem, resultQueryItem, resultLimitQueryItem]
         print(searchTermQueryItem)
         
         guard let requestURL = urlComponents?.url else {NSLog("requestURL is nil"); completion(NSError()); return}

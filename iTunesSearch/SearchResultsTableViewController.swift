@@ -14,7 +14,8 @@ class SearchResultsTableViewController: UITableViewController, UISearchBarDelega
     
     @IBOutlet weak var searchBar: UISearchBar!
     
-
+    @IBOutlet weak var resultNumberTextField: UITextField!
+    
     
     let searchResultsController = SearchResultController()
     
@@ -41,9 +42,10 @@ class SearchResultsTableViewController: UITableViewController, UISearchBarDelega
             resultType = .software
         }
         
-        guard let searchTerm = self.searchBar.text else {return}
+        guard let searchTerm = self.searchBar.text,
+             let numberOfSearchResults = self.resultNumberTextField.text else {return}
         
-        self.searchResultsController.performSearch(searchTerm: searchTerm, resultType: resultType) { (error) in
+        self.searchResultsController.performSearch(searchTerm: searchTerm, resultType: resultType, limit: Int(numberOfSearchResults) ?? 20) { (error) in
             if let error = error {
                 print("there is an error: \(error)")
                 return
